@@ -36,6 +36,9 @@ cmd_create() {
     # Project root is the directory this script is EXECUTED FROM
     PROJECT_ROOT="$(pwd)"
 
+    # Template directory
+    TEMPLATE_DIR="${SCRIPT_DIR}/lib/templates"
+
     ########################
     # SCRIPT START
     ########################
@@ -54,119 +57,29 @@ Refusing to overwrite. Choose a different project name or remove the folder."
     mkdir -p "${PROJECT_DIR}"
 
     ########################
-    # Create Program.cs
+    # Create Program.cs from template
     ########################
 
-    cat > "${PROJECT_DIR}/${MAIN_FILE}" <<EOF
-using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+    if [ ! -f "${TEMPLATE_DIR}/Program.cs.template" ]; then
+        error "Template file not found: ${TEMPLATE_DIR}/Program.cs.template"
+    fi
 
-namespace ${PROJECT_NAME}
-{
-    partial class Program : MyGridProgram
-    {
-        int ticks;
-
-        public Program()
-        {
-            Runtime.UpdateFrequency = UpdateFrequency.Update100;
-            Echo("Starting...");
-        }
-
-        public void Main(string argument, UpdateType updateSource)
-        {
-            ticks++;
-            Echo(\$"Ticks: {ticks}");
-        }
-    }
-}
-EOF
+    sed "s|__PROJECT_NAME__|${PROJECT_NAME}|g" \
+        "${TEMPLATE_DIR}/Program.cs.template" > "${PROJECT_DIR}/${MAIN_FILE}"
 
     ########################
-    # Create .csproj with references
+    # Create .csproj from template
     ########################
 
     CS_PROJ="${PROJECT_DIR}/${PROJECT_NAME}.csproj"
 
-    cat > "${CS_PROJ}" <<EOF
-<Project Sdk="Microsoft.NET.Sdk">
+    if [ ! -f "${TEMPLATE_DIR}/project.csproj.template" ]; then
+        error "Template file not found: ${TEMPLATE_DIR}/project.csproj.template"
+    fi
 
-  <PropertyGroup>
-    <!-- This is mainly for IntelliSense / compilation checks. -->
-    <TargetFramework>net48</TargetFramework>
-    <OutputType>Library</OutputType>
-    <LangVersion>latest</LangVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Nullable>disable</Nullable>
-    <RootNamespace>${PROJECT_NAME}</RootNamespace>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="Sandbox.Common">
-      <HintPath>${SE_BIN}/Sandbox.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Sandbox.Game">
-      <HintPath>${SE_BIN}/Sandbox.Game.dll</HintPath>
-    </Reference>
-    <Reference Include="Sandbox.Graphics">
-      <HintPath>${SE_BIN}/Sandbox.Graphics.dll</HintPath>
-    </Reference>
-    <Reference Include="SpaceEngineers.Game">
-      <HintPath>${SE_BIN}/SpaceEngineers.Game.dll</HintPath>
-    </Reference>
-    <Reference Include="SpaceEngineers.ObjectBuilders">
-      <HintPath>${SE_BIN}/SpaceEngineers.ObjectBuilders.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable">
-      <HintPath>${SE_BIN}/System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage">
-      <HintPath>${SE_BIN}/VRage.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage.Audio">
-      <HintPath>${SE_BIN}/VRage.Audio.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage.Game">
-      <HintPath>${SE_BIN}/VRage.Game.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage.Input">
-      <HintPath>${SE_BIN}/VRage.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage.Library">
-      <HintPath>${SE_BIN}/VRage.Library.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage.Math">
-      <HintPath>${SE_BIN}/VRage.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage.Render">
-      <HintPath>${SE_BIN}/VRage.Render.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage.Render11">
-      <HintPath>${SE_BIN}/VRage.Render11.dll</HintPath>
-    </Reference>
-    <Reference Include="VRage.Scripting">
-      <HintPath>${SE_BIN}/VRage.Scripting.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-</Project>
-EOF
+    sed -e "s|__PROJECT_NAME__|${PROJECT_NAME}|g" \
+        -e "s|__SE_BIN__|${SE_BIN}|g" \
+        "${TEMPLATE_DIR}/project.csproj.template" > "${CS_PROJ}"
 
     ########################
     # Restore dependencies for IntelliSense
