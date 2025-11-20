@@ -1,0 +1,30 @@
+; Centralized configuration for create/export scripts (INI-style).
+; Shared values live under [common]; per-area sections override only when needed.
+; NOTE: steam_root and se_appdata must be set explicitly (they should include the linux user path).
+;
+; SETUP: Copy this file to selis.conf and update the paths below with your system paths.
+
+[common]
+; Steam root (Debian-layout). Use absolute path and include your linux username.
+; Example: /home/youruser/.steam/debian-installation/steamapps
+steam_root = /home/youruser/.steam/debian-installation/steamapps
+
+; Space Engineers AppData (Proton prefix). Use absolute path.
+; Example:
+; /home/youruser/.steam/debian-installation/steamapps/compatdata/244850/pfx/drive_c/users/steamuser/AppData/Roaming/SpaceEngineers
+se_appdata = /home/youruser/.steam/debian-installation/steamapps/compatdata/244850/pfx/drive_c/users/steamuser/AppData/Roaming/SpaceEngineers
+
+; Space Engineers binary folder (contains all the DLLs)
+se_bin = /home/youruser/.steam/debian-installation/steamapps/common/SpaceEngineers/Bin64
+
+; Main source file name
+main_file = Program.cs
+
+; Whether to run a build before exporting (true/false)
+run_build = true
+
+[create]
+; Uses values from [common] unless overridden here.
+
+[export]
+; Uses values from [common] unless overridden here.
