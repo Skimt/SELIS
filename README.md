@@ -4,6 +4,8 @@
 
 A development environment for writing and deploying Space Engineers programmable block scripts on Linux systems running the game via Proton/Steam.
 
+> **Note:** This project is inspired by [Malware's MDK-SE](https://github.com/malware-dev/MDK-SE) (now [MDK2](https://github.com/malforge/mdk2)), which provides a Visual Studio extension for Space Engineers scripting on Windows. SELIS offers a lightweight, bash-based alternative optimized for Linux/Proton environments. For MDK's Linux setup guide, see [Running MDK on Linux](https://github.com/malforge/mdk2/wiki/Running-MDK-on-Linux-%28functional%2C-but-unsupported%29).
+
 ## Features
 
 - **Full IntelliSense Support** - Write scripts with complete IDE support by referencing Space Engineers DLLs
