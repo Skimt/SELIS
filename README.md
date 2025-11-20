@@ -41,9 +41,9 @@ A development environment for writing and deploying Space Engineers programmable
    se_bin = /home/youruser/.steam/debian-installation/steamapps/common/SpaceEngineers/Bin64
    ```
 
-4. Make scripts executable:
+4. Make selis executable:
    ```bash
-   chmod +x selis create export remove
+   chmod +x selis
    ```
 
 ## Quick Start
@@ -52,11 +52,6 @@ A development environment for writing and deploying Space Engineers programmable
 
 ```bash
 ./selis create MyNewScript
-```
-
-Or using the legacy wrapper:
-```bash
-./create MyNewScript
 ```
 
 This creates a new folder with:
@@ -87,11 +82,6 @@ namespace MyNewScript
 ./selis export MyNewScript MyNewScript
 ```
 
-Or using the legacy wrapper:
-```bash
-./export MyNewScript MyNewScript
-```
-
 This will:
 1. Validate your code with `dotnet build` (optional, configured in `selis.conf`)
 2. Strip the namespace/class wrapper
@@ -110,11 +100,6 @@ This will:
 
 ```bash
 ./selis remove ProjectName
-```
-
-Or using the legacy wrapper:
-```bash
-./remove ProjectName
 ```
 
 This will:
@@ -180,8 +165,6 @@ Edit `selis.conf` to customize behavior:
 5. Test in-game
 6. Iterate: modify code → export → test
 7. Remove project when done: `./selis remove ProjectName` (optional)
-
-**Note:** Legacy wrappers (`./create`, `./export`, `./remove`) are still supported for backwards compatibility.
 
 ## Important Notes
 
