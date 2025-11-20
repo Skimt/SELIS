@@ -1,0 +1,26 @@
+SELIS - Space Engineers Linux Ingame Scripting
+
+Usage: selis <command> [arguments]
+
+Commands:
+  create <ProjectName>
+      Create a new Space Engineers script project with IntelliSense support.
+      Example: selis create MyScript
+
+  export <ProjectFolderName> <IngameScriptName>
+      Process and export a script to Space Engineers IngameScripts folder.
+      Validates code, strips wrapper, minifies, and deploys to game.
+      Example: selis export MyScript MyScript
+
+  remove <ProjectName>
+      Remove a project from both the solution file and filesystem.
+      Requires confirmation prompt.
+      Example: selis remove MyScript
+
+  help
+      Show this help message.
+
+Configuration:
+  Edit selis.conf to set your Steam and Space Engineers paths.
+
+For more information, see README.md

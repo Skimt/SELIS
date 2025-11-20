@@ -138,10 +138,17 @@ selis/
 ├── MyScript/              # Example project
 │   ├── Program.cs         # Script source
 │   └── MyScript.csproj    # Project file with SE DLL refs
+├── lib/                   # Modular command implementations
+│   ├── common.sh          # Shared functions (config, logging)
+│   ├── create.sh          # Project creation logic
+│   ├── export.sh          # Export/deployment logic
+│   ├── remove.sh          # Project removal logic
+│   └── templates/         # Template files for scaffolding
+│       ├── Program.cs.template       # Boilerplate C# script
+│       ├── project.csproj.template   # MSBuild project file
+│       └── help.txt                  # Main help message
 ├── selis.conf             # Configuration file
-├── create                 # Project creation script
-├── export                 # Export/deployment script
-├── remove                 # Project removal script
+├── selis                  # Main dispatcher (git-style commands)
 ├── selis.sln              # Visual Studio solution file
 └── README.md
 ```
