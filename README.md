@@ -9,6 +9,7 @@ A development environment for writing and deploying Space Engineers programmable
 ## Features
 
 - **Full IntelliSense Support** - Write scripts with complete IDE support by referencing Space Engineers DLLs
+- **Multi-File Projects** - Organize complex scripts across multiple .cs files with automatic merging
 - **Build Validation** - Optional compilation checks before export to catch errors early
 - **Automated Processing** - Automatic namespace/class wrapper stripping and code minification
 - **Seamless Integration** - Direct export to Space Engineers' IngameScripts folder
@@ -76,6 +77,8 @@ namespace MyNewScript
 }
 ```
 
+**Multi-File Support:** You can create additional `.cs` files in the project directory for better organization. All files must use the same wrapper structure. See the [Multi-File Projects](#multi-file-projects) section below.
+
 ### Export to Game
 
 ```bash
@@ -84,9 +87,10 @@ namespace MyNewScript
 
 This will:
 1. Validate your code with `dotnet build` (optional, configured in `selis.conf`)
-2. Strip the namespace/class wrapper
-3. Minify the code
-4. Copy to Space Engineers' IngameScripts folder
+2. Bundle all `.cs` files in the project directory
+3. Strip the namespace/class wrapper from each file
+4. Minify the code
+5. Copy to Space Engineers' IngameScripts folder
 
 ### Load in Space Engineers
 
@@ -126,10 +130,62 @@ namespace MyScript
 ```
 
 The `export` script automatically:
-- Removes the namespace and class wrapper
+- Bundles all `.cs` files in the project
+- Removes the namespace and class wrapper from each file
 - Strips comments
 - Minifies whitespace
 - Exports only the inner code to Space Engineers
+
+### Multi-File Projects
+
+For better code organization, you can split your script across multiple `.cs` files. All files must use the same wrapper structure.
+
+**Example: Program.cs**
+```csharp
+namespace MyScript
+{
+  partial class Program : MyGridProgram
+  {
+    BlockManager blockManager;
+
+    public Program()
+    {
+      blockManager = new BlockManager(this);
+    }
+
+    public void Main(string argument, UpdateType updateSource)
+    {
+      blockManager.Update();
+    }
+  }
+}
+```
+
+**Example: BlockManager.cs**
+```csharp
+namespace MyScript
+{
+  partial class Program : MyGridProgram
+  {
+    class BlockManager
+    {
+      Program program;
+
+      public BlockManager(Program p)
+      {
+        program = p;
+      }
+
+      public void Update()
+      {
+        program.Echo("BlockManager running");
+      }
+    }
+  }
+}
+```
+
+During export, both files are merged and the `BlockManager` class becomes nested inside the `Program` class in the final script. C# partial class semantics allow you to split fields, methods, and nested classes across multiple files while maintaining full IntelliSense support.
 
 ### Project Structure
 
@@ -143,6 +199,8 @@ selis/
 │   ├── create.sh          # Project creation logic
 │   ├── export.sh          # Export/deployment logic
 │   ├── remove.sh          # Project removal logic
+│   ├── bundle.sh          # Multi-file bundling utility
+│   ├── minify.sh          # Code minification utility
 │   └── templates/         # Template files for scaffolding
 │       ├── Program.cs.template       # Boilerplate C# script
 │       ├── project.csproj.template   # MSBuild project file

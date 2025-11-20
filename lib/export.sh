@@ -51,7 +51,6 @@ cmd_export() {
         error "Project folder '${PROJECT_NAME}' does not exist in: ${PROJECT_ROOT}"
     fi
 
-    SRC_FILE="${PROJECT_DIR}/${MAIN_FILE}"
     CSPROJ_FILE="${PROJECT_DIR}/${PROJECT_NAME}.csproj"
 
     INGAME_SCRIPTS_ROOT="${SE_APPDATA}/IngameScripts/local"
@@ -59,12 +58,14 @@ cmd_export() {
     DEST_FILE="${DEST_DIR}/script.cs"
 
     echo "Project folder: ${PROJECT_DIR}"
-    echo "Source file:    ${SRC_FILE}"
     echo "Export name:    ${INGAME_SCRIPT_NAME}"
 
-    if [ ! -f "${SRC_FILE}" ]; then
-        error "Source file not found: ${SRC_FILE}"
+    # Count .cs files in project
+    CS_FILE_COUNT=$(find "${PROJECT_DIR}" -maxdepth 1 -name "*.cs" -type f | wc -l)
+    if [ "${CS_FILE_COUNT}" -eq 0 ]; then
+        error "No .cs files found in project directory: ${PROJECT_DIR}"
     fi
+    echo "Source files:   ${CS_FILE_COUNT} .cs file(s) found"
 
     if [ ! -d "${INGAME_SCRIPTS_ROOT}" ]; then
         error "Ingame scripts root folder not found: ${INGAME_SCRIPTS_ROOT}
@@ -102,19 +103,12 @@ Skipping build; export will proceed without validation."
     fi
 
     ########################################
-    # Strip wrappers + minify + export
+    # Bundle sources + minify + export
     ########################################
 
-    echo "Stripping namespace/Program wrapper, minifying and exporting..."
+    echo "Bundling .cs files, stripping wrappers, minifying and exporting..."
 
-    awk 'BEGIN {prog=0} /partial class Program/ {prog=1; next} prog {print}' "${SRC_FILE}" \
-      | tail -n +2 \
-      | sed '$d' \
-      | sed '$d' \
-      | sed -E 's://.*$::' \
-      | tr -d '\r' \
-      | awk 'NF {gsub(/^[[:space:]]+|[[:space:]]+$/, ""); gsub(/[[:space:]]+/, " "); printf "%s ", $0} END {print ""}' \
-      > "${DEST_FILE}"
+    "${SCRIPT_DIR}/lib/bundle.sh" "${PROJECT_DIR}" | "${SCRIPT_DIR}/lib/minify.sh" > "${DEST_FILE}"
 
     echo "-------------------------------------------------------"
     echo "Exported processed script to:"

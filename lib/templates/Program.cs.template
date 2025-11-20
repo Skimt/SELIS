@@ -21,6 +21,11 @@ namespace __PROJECT_NAME__
 {
     partial class Program : MyGridProgram
     {
+        // Multi-file support: You can create additional .cs files in this project directory.
+        // All files must use the same wrapper structure:
+        //   namespace __PROJECT_NAME__ { partial class Program : MyGridProgram { ... } }
+        // Classes defined in separate files will be merged during export.
+
         int ticks;
 
         public Program()
