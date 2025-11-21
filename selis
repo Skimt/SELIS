@@ -48,6 +48,10 @@ case "$COMMAND" in
         source "${SCRIPT_DIR}/lib/remove.sh"
         cmd_remove "$@"
         ;;
+    validate)
+        source "${SCRIPT_DIR}/lib/validate.sh"
+        cmd_validate "$@"
+        ;;
     help|--help|-h)
         show_usage
         ;;

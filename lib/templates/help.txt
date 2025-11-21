@@ -17,6 +17,11 @@ Commands:
       Requires confirmation prompt.
       Example: selis remove MyScript
 
+  validate <ProjectName>
+      Check project against the Space Engineers API whitelist.
+      Reports any APIs that are not available in programmable blocks.
+      Example: selis validate MyScript
+
   help
       Show this help message.
 

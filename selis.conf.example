@@ -23,6 +23,9 @@ main_file = Program.cs
 ; Whether to run a build before exporting (true/false)
 run_build = true
 
+; Whether to run whitelist validation before exporting (true/false)
+run_validate = true
+
 [create]
 ; Uses values from [common] unless overridden here.
 

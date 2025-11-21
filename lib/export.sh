@@ -37,6 +37,9 @@ cmd_export() {
     RUN_BUILD="$(conf_get common run_build)"
     if [ -z "${RUN_BUILD}" ]; then RUN_BUILD="true"; fi
 
+    RUN_VALIDATE="$(conf_get common run_validate)"
+    if [ -z "${RUN_VALIDATE}" ]; then RUN_VALIDATE="true"; fi
+
     # Project root is always the directory this script is executed from
     PROJECT_ROOT="$(pwd)"
 
@@ -73,6 +76,19 @@ Have you launched Space Engineers at least once?"
     fi
 
     mkdir -p "${DEST_DIR}"
+
+    ########################################
+    # Optional whitelist validation
+    ########################################
+
+    if [ "${RUN_VALIDATE}" = "true" ]; then
+        echo "Running whitelist validation..."
+        source "${SCRIPT_DIR}/lib/validate.sh"
+        if ! cmd_validate "${PROJECT_NAME}"; then
+            error "Whitelist validation failed. Aborting export."
+        fi
+        echo
+    fi
 
     ########################################
     # Optional build to validate the code
