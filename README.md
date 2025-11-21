@@ -10,6 +10,7 @@ A development environment for writing and deploying Space Engineers programmable
 
 - **Full IntelliSense Support** - Write scripts with complete IDE support by referencing Space Engineers DLLs
 - **Multi-File Projects** - Organize complex scripts across multiple .cs files with automatic merging
+- **Whitelist Validation** - Check scripts against the Space Engineers API whitelist before export
 - **Build Validation** - Optional compilation checks before export to catch errors early
 - **Automated Processing** - Automatic namespace/class wrapper stripping and code minification
 - **Seamless Integration** - Direct export to Space Engineers' IngameScripts folder
@@ -86,11 +87,12 @@ namespace MyNewScript
 ```
 
 This will:
-1. Validate your code with `dotnet build` (optional, configured in `selis.conf`)
-2. Bundle all `.cs` files in the project directory
-3. Strip the namespace/class wrapper from each file
-4. Minify the code
-5. Copy to Space Engineers' IngameScripts folder
+1. Check against the SE API whitelist (optional, configured in `selis.conf`)
+2. Validate your code with `dotnet build` (optional, configured in `selis.conf`)
+3. Bundle all `.cs` files in the project directory
+4. Strip the namespace/class wrapper from each file
+5. Minify the code
+6. Copy to Space Engineers' IngameScripts folder
 
 ### Load in Space Engineers
 
@@ -99,6 +101,14 @@ This will:
 3. Access a Programmable Block
 4. Click "Edit"
 5. Select your script from the local scripts list
+
+### Validate a Project
+
+```bash
+./selis validate MyNewScript
+```
+
+This checks your script against the Space Engineers API whitelist and reports any violations (banned namespaces, forbidden APIs like file I/O, networking, etc.). Validation also runs automatically during export.
 
 ### Remove a Project
 
@@ -199,8 +209,10 @@ selis/
 │   ├── create.sh          # Project creation logic
 │   ├── export.sh          # Export/deployment logic
 │   ├── remove.sh          # Project removal logic
+│   ├── validate.sh        # Whitelist validation logic
 │   ├── bundle.sh          # Multi-file bundling utility
 │   ├── minify.sh          # Code minification utility
+│   ├── whitelist.json     # SE API whitelist data
 │   └── templates/         # Template files for scaffolding
 │       ├── Program.cs.template       # Boilerplate C# script
 │       ├── project.csproj.template   # MSBuild project file
@@ -219,17 +231,19 @@ Edit `selis.conf` to customize behavior:
 - `se_appdata` - Space Engineers AppData folder (in Proton prefix)
 - `se_bin` - Space Engineers Bin64 folder (contains DLLs)
 - `main_file` - Source filename (default: `Program.cs`)
+- `run_validate` - Check against API whitelist before export (`true`/`false`)
 - `run_build` - Validate with build before export (`true`/`false`)
 
 ## Development Workflow
 
 1. Create project: `./selis create ProjectName`
 2. Write code in `ProjectName/Program.cs`
-3. Test build: `cd ProjectName && dotnet build -c Release`
-4. Export: `./selis export ProjectName ScriptName`
-5. Test in-game
-6. Iterate: modify code → export → test
-7. Remove project when done: `./selis remove ProjectName` (optional)
+3. Validate: `./selis validate ProjectName` (check API whitelist)
+4. Test build: `cd ProjectName && dotnet build -c Release`
+5. Export: `./selis export ProjectName ScriptName`
+6. Test in-game
+7. Iterate: modify code → validate → export → test
+8. Remove project when done: `./selis remove ProjectName` (optional)
 
 ## Important Notes
 
